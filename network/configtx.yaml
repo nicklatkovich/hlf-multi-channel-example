@@ -1,0 +1,92 @@
+Organizations:
+  - &Orderer
+    Name: Orderer
+    ID: OrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/hlf.pixelplex.io/msp
+
+  - &Managment
+    Name: Managment
+    ID: ManagmentMSP
+    MSPDir: crypto-config/peerOrganizations/managment.hlf.pixelplex.io/msp
+    AnchorPeers:
+      - Host: peer0.managment.hlf.pixelplex.io
+        Port: 7051
+
+  - &WebDepartment
+    Name: WebDepartment
+    ID: WebDepartmentMSP
+    MSPDir: crypto-config/peerOrganizations/web.hlf.pixelplex.io/msp
+    AnchorPeers:
+      - Host: peer0.web.hlf.pixelplex.io
+        Port: 7051
+
+  - &AIDepartment
+    Name: AIDepartment
+    ID: AIDepartmentMSP
+    MSPDir: crypto-config/peerOrganizations/ai.hlf.pixelplex.io/msp
+    AnchorPeers:
+      - Host: peer0.ai.hlf.pixelplex.io
+        Port: 7051
+
+Orderer: &OrdererDefaults
+  OrdererType: solo
+  Addresses:
+    - orderer.hlf.pixelplex.io:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Kafka:
+    Brokers:
+      - 127.0.0.1:9092
+
+Application: &ApplicationDefaults
+  Organizations:
+
+Capabilities:
+  Global: &ChannelCapabilities
+    V1_1: true
+  Orderer: &OrdererCapabilities
+    V1_1: true
+  Application: &ApplicationCapabilities
+    V1_1: true
+
+Profiles:
+  OrdererGenesis:
+    Capabilities:
+      <<: *ChannelCapabilities
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *Orderer
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+          - *Managment
+          - *WebDepartment
+          - *AIDepartment
+
+  CommonChannel:
+    Consortium: SampleConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *Managment
+        - *WebDepartment
+        - *AIDepartment
+      Capabilities:
+        <<: *ApplicationCapabilities
+
+  DevelopersChannel:
+    Consortium: SampleConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *WebDepartment
+        - *AIDepartment
+      Capabilities:
+        <<: *ApplicationCapabilities

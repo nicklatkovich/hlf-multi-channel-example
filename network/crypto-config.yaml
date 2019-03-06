@@ -1,0 +1,30 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: hlf.pixelplex.io
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: Managment
+    Domain: managment.hlf.pixelplex.io
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: WebDepartment
+    Domain: web.hlf.pixelplex.io
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: AIDepartment
+    Domain: ai.hlf.pixelplex.io
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
